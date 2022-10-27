@@ -16,6 +16,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // Enabling multidex support.
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -41,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support:multidex:1.0.3'  //with support libraries
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // App dependencies
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
@@ -66,6 +69,9 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
     implementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
+
+    // Firebase Authentication
+    implementation 'com.firebaseui:firebase-ui-auth:5.0.0'
 
     //Room dependencies
     implementation "androidx.room:room-ktx:$roomVersion"
