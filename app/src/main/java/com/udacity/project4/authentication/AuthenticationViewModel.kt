@@ -1,10 +1,9 @@
-package com.udacity.project4.authentication.login
+package com.udacity.project4.authentication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
-import com.udacity.project4.authentication.FirebaseUserLiveData
 
-class LoginViewModel : ViewModel() {
+class AuthenticationViewModel : ViewModel() {
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
     }
