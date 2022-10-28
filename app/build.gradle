@@ -7,7 +7,6 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion "29.0.2"
 
     defaultConfig {
         applicationId "com.udacity.project4"
@@ -33,10 +32,6 @@ android {
         returnDefaultValues = true
     }
 
-    //dataBinding {
-    //    enabled = true
-    //    enabledForTests = true
-    //}
     buildFeatures {
         dataBinding true
     }
