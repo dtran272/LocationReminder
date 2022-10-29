@@ -108,6 +108,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             )
         }
 
+        if (currentPoiMarker == null) {
+            displayInstructionToast()
+        }
+
         zoomIntoCurrentLocation()
         setMapStyle()
         setPoiClick()
@@ -158,7 +162,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     private fun onLocationSelected() {
         if (currentPoiMarker == null) {
-            Toast.makeText(requireContext(), "Select point of interest before saving.", Toast.LENGTH_LONG).show()
+            displayInstructionToast()
         }
 
         currentPoiMarker?.let {
@@ -167,6 +171,13 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    private fun displayInstructionToast() {
+        Toast.makeText(requireContext(), "Select point of interest before saving.", Toast.LENGTH_LONG)
+            .apply {
+                setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+                show()
+            }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.map_options, menu)
