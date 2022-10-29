@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.firebase.ui.auth.AuthUI
@@ -13,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.locationreminders.RemindersActivity
 import kotlinx.android.synthetic.main.activity_authentication.*
+import org.koin.android.ext.android.inject
 
 /**
  * This class should be the starting point of the app, It asks the users to sign in / register, and redirects the
@@ -25,7 +25,7 @@ class AuthenticationActivity : AppCompatActivity() {
         const val SIGN_IN_RESULT_CODE = 1001
     }
 
-    private val viewModel by viewModels<AuthenticationViewModel>()
+    private val viewModel: AuthenticationViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

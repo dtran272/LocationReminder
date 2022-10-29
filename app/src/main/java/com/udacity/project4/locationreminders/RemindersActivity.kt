@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,12 +17,13 @@ import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.locationreminders.reminderslist.REQUEST_LOACTION_PERMISSION
 import kotlinx.android.synthetic.main.activity_reminders.*
+import org.koin.android.ext.android.inject
 
 /**
  * The RemindersActivity that holds the reminders fragments
  */
 class RemindersActivity : AppCompatActivity() {
-    private val authViewModel by viewModels<AuthenticationViewModel>()
+    private val authViewModel: AuthenticationViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
