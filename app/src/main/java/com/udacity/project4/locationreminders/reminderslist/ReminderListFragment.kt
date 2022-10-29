@@ -13,9 +13,6 @@ import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-private const val TAG = "ReminderListFragment"
-const val REQUEST_LOACTION_PERMISSION = 1
-
 class ReminderListFragment : BaseFragment() {
     // Use Koin to retrieve the ViewModel instance
     override val _viewModel: RemindersListViewModel by viewModel()
