@@ -7,9 +7,9 @@ import androidx.core.app.JobIntentService
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.project4.R
-import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
+import com.udacity.project4.locationreminders.data.local.IRemindersRepository
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.sendNotification
 import kotlinx.coroutines.*
@@ -63,7 +63,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 
         requestId?.let { entryId ->
             //Get the local repository instance
-            val remindersLocalRepository: ReminderDataSource by inject()
+            val remindersLocalRepository: IRemindersRepository by inject()
 
             // Interaction to the repository has to be through a coroutine scope
             CoroutineScope(coroutineContext).launch(SupervisorJob()) {

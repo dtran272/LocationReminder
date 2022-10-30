@@ -23,7 +23,6 @@ import com.udacity.project4.locationreminders.geofence.GeofencingConstants.GEOFE
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
-import java.util.concurrent.TimeUnit
 
 @SuppressLint("UnspecifiedImmutableFlag")
 class SaveReminderFragment : BaseFragment() {
@@ -97,7 +96,7 @@ class SaveReminderFragment : BaseFragment() {
 
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
             addOnSuccessListener {
-                Log.e("Add Geofence", geofence.requestId)
+                Log.v("Add Geofence", geofence.requestId)
             }
 
             addOnFailureListener {
