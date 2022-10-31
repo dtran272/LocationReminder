@@ -3,6 +3,7 @@ package com.udacity.project4.locationreminders.data.local
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
+import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.*
 
 /**
@@ -17,23 +18,31 @@ class RemindersLocalRepository(
 ) : IRemindersRepository {
 
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
-        return remindersLocalDataSource.getReminders()
+        wrapEspressoIdlingResource {
+            return remindersLocalDataSource.getReminders()
+        }
     }
 
     override suspend fun saveReminder(reminder: ReminderDTO) {
-        coroutineScope {
-            remindersLocalDataSource.saveReminder(reminder)
+        wrapEspressoIdlingResource {
+            coroutineScope {
+                remindersLocalDataSource.saveReminder(reminder)
+            }
         }
     }
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
-        return remindersLocalDataSource.getReminder(id)
+        wrapEspressoIdlingResource {
+            return remindersLocalDataSource.getReminder(id)
+        }
     }
 
     override suspend fun deleteAllReminders() {
-        withContext(ioDispatcher) {
-            coroutineScope {
-                launch { remindersLocalDataSource.deleteAllReminders() }
+        wrapEspressoIdlingResource {
+            withContext(ioDispatcher) {
+                coroutineScope {
+                    launch { remindersLocalDataSource.deleteAllReminders() }
+                }
             }
         }
     }

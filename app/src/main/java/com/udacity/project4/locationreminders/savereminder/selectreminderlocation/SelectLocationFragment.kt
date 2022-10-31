@@ -61,6 +61,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         binding.viewModel = _viewModel
         binding.lifecycleOwner = this
+        binding.saveButton.isClickable = false
 
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
@@ -158,12 +159,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         zoomIntoCurrentLocation()
         setMapStyle()
-        setMapLongClick()
+        setMapClick()
         setPoiClick()
+
+        binding.saveButton.isClickable = true
     }
 
-    private fun setMapLongClick() {
-        map.setOnMapLongClickListener { latLng ->
+    private fun setMapClick() {
+        map.setOnMapClickListener { latLng ->
             currentPoiMarker?.remove()
 
             val snippet = String.format(
