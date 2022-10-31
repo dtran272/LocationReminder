@@ -88,6 +88,7 @@ dependencies {
 
 
     // Dependencies for local unit tests
+    testImplementation project(path: ':app')
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.hamcrest:hamcrest-all:$hamcrestVersion"
     testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
