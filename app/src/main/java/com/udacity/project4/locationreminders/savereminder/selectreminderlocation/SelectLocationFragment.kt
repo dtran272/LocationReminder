@@ -158,7 +158,31 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         zoomIntoCurrentLocation()
         setMapStyle()
+        setMapLongClick()
         setPoiClick()
+    }
+
+    private fun setMapLongClick() {
+        map.setOnMapLongClickListener { latLng ->
+            currentPoiMarker?.remove()
+
+            val snippet = String.format(
+                Locale.getDefault(),
+                "Lat: %1$.5f, Long: %2$.5f",
+                latLng.latitude,
+                latLng.longitude
+            )
+
+            currentPoiMarker = map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(getString(R.string.dropped_pin))
+                    .snippet(snippet)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))  // Changes the color of the marker
+            )
+
+            currentPoiMarker?.showInfoWindow()
+        }
     }
 
     private fun setPoiClick() {
