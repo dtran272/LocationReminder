@@ -18,7 +18,6 @@ import org.junit.runner.RunWith
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
-//Unit test the DAO
 @SmallTest
 class RemindersDaoTest {
     private val REMINDER1 = ReminderDTO("Clean room", "Remember to clean room.", "My room", 42.123, 75.3216, "1")
