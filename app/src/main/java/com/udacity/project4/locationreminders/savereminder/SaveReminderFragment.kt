@@ -78,7 +78,10 @@ class SaveReminderFragment : BaseFragment() {
             val reminderData = ReminderDataItem(title, description, location, latitude, longitude)
 
             if (_viewModel.validateEnteredData(reminderData)) {
-                buildGeofenceRequest(reminderData)
+                if (isPermissionsGranted()) {
+                    buildGeofenceRequest(reminderData)
+                }
+
                 _viewModel.saveReminder(reminderData)
             }
         }
@@ -135,7 +138,8 @@ class SaveReminderFragment : BaseFragment() {
             } else {
                 Snackbar.make(
                     binding.root,
-                    R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
+                    R.string.location_required_error,
+                    Snackbar.LENGTH_LONG
                 ).setAction(android.R.string.ok) {
                     checkDeviceLocationSettingsAndEnableGeofencing()
                 }.show()
