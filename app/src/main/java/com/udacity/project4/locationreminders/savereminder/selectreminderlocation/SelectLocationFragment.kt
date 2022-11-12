@@ -245,7 +245,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
 
         currentPoiMarker?.let {
-            _viewModel.selectedPOI.value = PointOfInterest(it.position, it.id, it.title ?: "Unknown")
+            _viewModel.setSelectedPOI(PointOfInterest(it.position, it.id, it.title ?: "Unknown"))
             findNavController().popBackStack()
         }
     }

@@ -80,14 +80,6 @@ class SaveReminderFragment : BaseFragment() {
                 requestBackgroundLocationPermission()
             }
         }
-
-        _viewModel.selectedPOI.observe(viewLifecycleOwner, Observer { selectedLocation ->
-            selectedLocation?.let {
-                _viewModel.reminderSelectedLocationStr.value = selectedLocation.name
-                _viewModel.latitude.value = selectedLocation.latLng.latitude
-                _viewModel.longitude.value = selectedLocation.latLng.longitude
-            }
-        })
     }
 
     private fun getReminderDataItem(): ReminderDataItem {
