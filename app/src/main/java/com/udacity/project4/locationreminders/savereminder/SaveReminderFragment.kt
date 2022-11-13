@@ -3,6 +3,7 @@ package com.udacity.project4.locationreminders.savereminder
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Intent
@@ -18,8 +19,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
@@ -68,7 +67,7 @@ class SaveReminderFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = this
         binding.selectLocation.setOnClickListener {
-            //            Navigate to another fragment to get the user location
+            // Navigate to another fragment to get the user location
             _viewModel.navigationCommand.value =
                 NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
         }
@@ -127,7 +126,7 @@ class SaveReminderFragment : BaseFragment() {
         locationSettingsResponseTask.addOnFailureListener { exception ->
             if (exception is ResolvableApiException && resolve) {
                 try {
-                    exception.startResolutionForResult(requireActivity(), REQUEST_TURN_DEVICE_LOCATION_ON)
+                    startIntentSenderForResult(exception.resolution.intentSender, REQUEST_TURN_DEVICE_LOCATION_ON, null, 0, 0, 0, null)
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.e(TAG, "Error getting location settings resolution: " + sendEx.message)
                 }
@@ -136,9 +135,6 @@ class SaveReminderFragment : BaseFragment() {
                     .setMessage(R.string.location_required_error)
                     .setPositiveButton(R.string.ok) { _, _ ->
                         checkDeviceLocationSettingsAndEnableGeofencing()
-                    }
-                    .setNegativeButton(R.string.no_thanks) { _, _ ->
-                        findNavController().popBackStack()
                     }
                     .create()
 
@@ -155,6 +151,20 @@ class SaveReminderFragment : BaseFragment() {
                 if (_viewModel.validateEnteredData(reminderData)) {
                     buildGeofenceRequest(reminderData)
                 }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON && resultCode == Activity.RESULT_OK) {
+            checkDeviceLocationSettingsAndEnableGeofencing(false)
+        } else if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON && resultCode == Activity.RESULT_CANCELED) {
+            val reminderData = getReminderDataItem()
+
+            if (_viewModel.validateEnteredData(reminderData)) {
+                _viewModel.saveReminder(reminderData)
             }
         }
     }

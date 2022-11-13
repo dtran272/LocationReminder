@@ -2,6 +2,7 @@ package com.udacity.project4.locationreminders.savereminder.selectreminderlocati
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.IntentSender
@@ -74,6 +75,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
+        loadMap()
+
         if (requestCode == REQUEST_FOREGROUND_PERMISSIONS_REQUEST_CODE &&
             (grantResults.isEmpty() || grantResults[LOCATION_PERMISSION_INDEX] == PackageManager.PERMISSION_DENIED)
         ) {
@@ -89,12 +92,13 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 })
             }.show()
+        } else {
+            checkDeviceLocationSettingsAndMyLocation()
         }
-
-        checkDeviceLocationSettingsAndLoadMap()
     }
 
-    private fun checkDeviceLocationSettingsAndLoadMap(resolve: Boolean = true) {
+    @SuppressLint("MissingPermission")
+    private fun checkDeviceLocationSettingsAndMyLocation(resolve: Boolean = true) {
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_LOW_POWER, GeofencingConstants.LOCATION_REQUEST_INTERVAL).build()
 
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
@@ -105,7 +109,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         locationSettingsResponseTask.addOnFailureListener { exception ->
             if (exception is ResolvableApiException && resolve) {
                 try {
-                    exception.startResolutionForResult(requireActivity(), REQUEST_TURN_DEVICE_LOCATION_ON)
+                    startIntentSenderForResult(exception.resolution.intentSender, REQUEST_TURN_DEVICE_LOCATION_ON, null, 0, 0, 0, null)
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.e(TAG, "Error getting location settings resolution: " + sendEx.message)
                 }
@@ -113,10 +117,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 val dialog = AlertDialog.Builder(requireContext())
                     .setMessage(R.string.location_required_error)
                     .setPositiveButton(R.string.ok) { _, _ ->
-                        checkDeviceLocationSettingsAndLoadMap()
-                    }
-                    .setNegativeButton(R.string.no_thanks) { _, _ ->
-                        findNavController().popBackStack()
+                        checkDeviceLocationSettingsAndMyLocation()
                     }
                     .create()
 
@@ -128,8 +129,19 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         // Location permission has been approved
         locationSettingsResponseTask.addOnCompleteListener {
             if (it.isSuccessful) {
-                loadMap()
+                map.isMyLocationEnabled = true
+                map.uiSettings.isMyLocationButtonEnabled = true
+
+                zoomIntoCurrentLocation()
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON && resultCode == Activity.RESULT_OK) {
+            checkDeviceLocationSettingsAndMyLocation(false)
         }
     }
 
@@ -162,13 +174,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         setMapStyle()
         setMapClick()
         setPoiClick()
-
-        if (isPermissionsGranted()) {
-            map.isMyLocationEnabled = true
-            map.uiSettings.isMyLocationButtonEnabled = true
-
-            zoomIntoCurrentLocation()
-        }
     }
 
     private fun setMapClick() {
@@ -288,7 +293,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     private fun requestLocationPermission() {
         if (isPermissionsGranted()) {
-            checkDeviceLocationSettingsAndLoadMap()
+            loadMap()
+            checkDeviceLocationSettingsAndMyLocation()
             return
         }
 
